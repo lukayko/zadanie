@@ -1,10 +1,9 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./WeatherCardList.module.scss";
 import WeatherCard from "../WeatherCard/WeatherCard";
-import { WeatherContext } from "../../../../App";
 
-function WeatherCardList() {
-  const weatherData = useContext(WeatherContext);
+function WeatherCardList(props) {
+  const [forecastDayOne, forecastDayTwo] = props.data.forecastday;
 
   const cardsRef = useRef(null);
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -54,6 +53,21 @@ function WeatherCardList() {
     cardsRef.current.scrollLeft = scrollLeft - walk;
   };
 
+  const totalNumOfCards = 16;
+  const combinedCards = [...forecastDayOne["hour"], ...forecastDayTwo["hour"]];
+  const currentHour = new Date().getHours();
+  const currentDate = new Date();
+
+  const filteredCards = combinedCards.filter((hour) => {
+    const hourDate = new Date(hour.time);
+    return (
+      hourDate.getHours() >= currentHour - 1 ||
+      hourDate.getDate() !== currentDate.getDate()
+    );
+  });
+
+  const limitedCards = filteredCards.slice(0, totalNumOfCards);
+
   return (
     <div>
       <div
@@ -64,8 +78,8 @@ function WeatherCardList() {
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
       >
-        {weatherData.weatherData.map((data, index) => {
-          return <WeatherCard weatherData={data} key={index} />;
+        {limitedCards.map((data, index) => {
+          return <WeatherCard data={data} key={index} />;
         })}
       </div>
       <div className={styles["scroller-wrapper"]}>

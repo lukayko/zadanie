@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./DetailCard.module.scss";
 import { Wind, Umbrella, Droplet } from "../../../../assets/icons/weather";
 
@@ -9,15 +8,15 @@ const iconMap = {
 };
 
 function DetailCard(props) {
-  const details = props.weatherDetails;
+  const { data } = props;
 
   return (
     <div className={styles.wrapper}>
       <div className={styles["detail-card-img-container"]}>
-        <img src={iconMap[details.img]} alt={details.text} />
+        <img src={iconMap[data.icon]} alt={data.text} />
       </div>
-      <p className={styles["detail-card-text"]}>{details.text}</p>
-      <p className={styles["detail-card-text-bold"]}>{details.value}</p>
+      <p className={styles["detail-card-text"]}>{data.text}</p>
+      <p className={styles["detail-card-text-bold"]}>{data.value}</p>
     </div>
   );
 }
